@@ -22,6 +22,30 @@ public class Book {
         this.state = state;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public void addItemToList(Book book){
         list.add(book);
     }
@@ -30,9 +54,12 @@ public class Book {
         return list;
     }
 
-    public Optional<Book> getItemBook(String id) {
-        return list.stream().filter(book -> book.id == id).findFirst();
-    }
+   public Book getItemBook(String id) {
+    return list.stream()
+            .filter(book -> book.getId().equals(id))
+            .findFirst()
+            .orElse(null);
+}
 
     public ArrayList<Book> findByState(String state) {
         return (ArrayList<Book>) this.list.stream()
@@ -42,12 +69,12 @@ public class Book {
 
     public void lendBook(String id) {
         list.stream()
-                .filter(book -> book.id == id)
-                .findFirst()
-                .ifPresent(book -> book.state = "borrowed");
+    .filter(book -> book.getId().equals(id))
+    .findFirst()
+    .ifPresent(book -> book.setState("borrowed"));
     }
 
-    public boolean checkBook(String id) {
-        return this.list.stream().anyMatch(book -> book.id == id && book.state.equals("borrowed"));
-    }
+   public boolean isBorrowed(String id) {
+    return this.list.stream() .anyMatch(book -> book.getId().equals(id) && book.getState().equals("borrowed"));
+   }
 }
