@@ -1,16 +1,20 @@
+import Services.BookServices.Books;
+import Services.BookServicesIMPL;
+
+import java.time.LocalDate;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        Loans loans = new Loans();
-        Book book = new Book();
 
-        // Inicialización de libros
-        book.addItemToList(new Book("LC-0001-A", "Cien años de soledad", "Gabriel García Márquez", "Libro", "available"));
-        book.addItemToList(new Book("LC-0002-B", "El nombre del viento", "Patrick Rothfuss", "Libro", "available"));
-        book.addItemToList(new Book("LC-0003-C", "Orgullo y prejuicio", "Jane Austen", "Libro", "borrowed"));
+        Loans loans = new Loans();
+        BookServicesIMPL bookServices = new BookServicesIMPL(); // Replace with the actual implementation class
+
+        bookServices.addItemToList(new Books("LC-0001-A", "Cien años de soledad", "Gabriel García Márquez", "Libro", "available"));
+        bookServices.addItemToList(new Books("LC-0002-B", "El nombre del viento", "Patrick Rothfuss", "Libro", "available"));
+        bookServices.addItemToList(new Books("LC-0003-C", "Orgullo y prejuicio", "Jane Austen", "Libro", "available"));
 
         Scanner scanner = new Scanner(System.in);
         int option;
@@ -20,48 +24,61 @@ public class Main {
                     "1) Listado de libros \n" +
                     "2) Realizar préstamo \n" +
                     "3) Agregar un nuevo libro \n" +
+                    "4) Listado de prestamos \n" +
+                    "5) Listado de libros prestados \n" +
                     "0) Salir \n");
             option = scanner.nextInt();
             scanner.nextLine();
-
             switch (option) {
                 case 1:
-                    System.out.println("----------------------------------");
-                    System.out.println("Listado de libros:");
-                    System.out.println("----------------------------------");
-                    book.getList().forEach(book1 -> {
-                        System.out.println("ID: " + book1.getId());
-                        System.out.println("Autor: " + book1.getAuthor());
-                        System.out.println("Título: " + book1.getTitle());
-                        System.out.println("Tipo: " + book1.getType());
-                        System.out.println("Estado: " + book1.getState());
-                        System.out.println("----------------------------------");
-                    });
+                    System.out.println("{");
+                    System.out.println("  \"Listado de libros\": [");
+                    // Utilizar un contador para facilitar la impresión
+                    int count = 0;
+                    int totalBooks = bookServices.getList().size(); // Obtener el total de libros
+
+                    for (Books book1 : bookServices.getList()) {
+                        System.out.println("    {");
+                        System.out.println("      \"ID\": " + book1.getId() + ",");
+                        System.out.println("      \"Autor\": \"" + book1.getAuthor() + "\",");
+                        System.out.println("      \"Título\": \"" + book1.getTitle() + "\",");
+                        System.out.println("      \"Tipo\": \"" + book1.getType() + "\",");
+                        System.out.println("      \"Estado\": \"" + book1.getState() + "\"");
+                        System.out.print("    }");
+                        if (count < totalBooks - 1) {
+                            System.out.println(",");
+                        } else {
+                            System.out.println();
+                        }
+                        count++;
+                    }
+
+                    System.out.println("  ]");
+                    System.out.println("}");
                     break;
 
                 case 2:
-                    // Realizar préstamo
+
                     System.out.println("Ingrese su nombre:");
                     String peopleName = scanner.nextLine();
 
-                    System.out.println("Si es mayor de edad ingrese su documento:");
+                    System.out.println("Si es mayor de edad ingrese su documento si no ponga 00000000-0:");
                     String dui = scanner.nextLine();
 
                     System.out.println("Ingrese el ID del libro:");
                     String bookId = scanner.nextLine();
 
-                    boolean check = book.isBorrowed(bookId);
+                    boolean check = bookServices.isBorrowed(bookId);
                     if (check) {
                         System.out.println("El libro ya está prestado.");
                     } else {
-                        loans.addItem(new Loans(
+                        loans.newLoan(new Loans(
                                 bookId,
-                                java.time.LocalDate.now().toString(),
-                                java.time.LocalDate.now().plusMonths(3).toString(),
+                                LocalDate.now().toString(),
+                                LocalDate.now().plusMonths(3).toString(),
                                 peopleName,
-                                dui
-                        ));
-                        book.lendBook(bookId);
+                                dui));
+                        bookServices.lendBook(bookId);
                         System.out.println("El préstamo se realizó correctamente.");
                     }
                     break;
@@ -77,10 +94,64 @@ public class Main {
                     String type = scanner.nextLine();
 
                     String newId = generateBookId(type);
-                    book.addItemToList(new Book(newId, title, author, type, "available"));
+                    bookServices.addItemToList(new Books(newId, title, author, type, "available"));
                     System.out.println("Libro agregado con éxito. ID asignado: " + newId);
                     break;
 
+                case 4:
+                    System.out.println("{");
+                    System.out.println("  \"Listado de préstamos\": [");
+
+                    int countLoans = 0;
+                    int totalLoans = loans.getLoans().size(); // Obtener el total de préstamos
+
+                    for (Loans loans1 : loans.getLoans()) {
+                        System.out.println("    {");
+                        System.out.println("      \"Persona\": \"" + loans1.getPersonName() + "\",");
+                        System.out.println("      \"Persona DOC\": \"" + loans1.getPersonDoc() + "\",");
+                        System.out.println("      \"Libro ID\": " + loans1.getIdBook() + ",");
+                        System.out.println("      \"Fecha de préstamo\": \"" + loans1.getStartLoan() + "\",");
+                        System.out.println("      \"Fecha de devolución\": \"" + loans1.getEndLoan() + "\",");
+                        System.out.print("    }");
+
+                        if (countLoans < totalLoans - 1) {
+                            System.out.println(",");
+                        } else {
+                            System.out.println();
+                        }
+                        countLoans++;
+                    }
+
+                    System.out.println("  ]");
+                    System.out.println("}");
+                    break;
+
+                case 5:
+                    System.out.println("{");
+                    System.out.println("  \"Listado de libros\": [");
+                    // Utilizar un contador para facilitar la impresión
+                    int countLoandBooks = 0;
+                    int totalLoandsBooks = bookServices.getList().size(); // Obtener el total de libros
+
+                    for (Books book1 : bookServices.findByState("borrowed")) {
+                        System.out.println("    {");
+                        System.out.println("      \"ID\": " + book1.getId() + ",");
+                        System.out.println("      \"Autor\": \"" + book1.getAuthor() + "\",");
+                        System.out.println("      \"Título\": \"" + book1.getTitle() + "\",");
+                        System.out.println("      \"Tipo\": \"" + book1.getType() + "\",");
+                        System.out.println("      \"Estado\": \"" + book1.getState() + "\"");
+                        System.out.print("    }");
+                        if (countLoandBooks < totalLoandsBooks - 1) {
+                            System.out.println(",");
+                        } else {
+                            System.out.println();
+                        }
+                        countLoandBooks++;
+                    }
+
+                    System.out.println("  ]");
+                    System.out.println("}");
+                    break;
                 case 0:
                     System.out.println("Saliendo del programa...");
                     scanner.close();

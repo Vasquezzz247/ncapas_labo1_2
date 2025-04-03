@@ -6,6 +6,7 @@ public class Loans {
     private String endLoan;
     private String personName;
     private String personDoc = "00000000-0";
+    private ArrayList<Loans> list = new ArrayList<>();
 
     public Loans(String idBook, String startLoan, String endLoan, String personName, String personDoc) {
         this.idBook = idBook;
@@ -43,11 +44,9 @@ public class Loans {
         return list;
     }
 
-    private ArrayList<Loans> list = new ArrayList<>();
+    public void newLoan(Loans loans) { list.add(loans); }
 
-    public void addItem(Loans loans) { list.add(loans); }
-
-    public ArrayList<Loans> getItems() { return list; }
+    public ArrayList<Loans> getLoans() { return list; }
 }
 
 
