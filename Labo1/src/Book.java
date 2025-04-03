@@ -1,9 +1,10 @@
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Book {
-    private int id;
+    private String id;
     private String title;
     private String author;
     private String type;
@@ -13,7 +14,7 @@ public class Book {
 
     public Book(){}
 
-    public Book(int id, String title, String author, String type, String state) {
+    public Book(String id, String title, String author, String type, String state) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -29,7 +30,7 @@ public class Book {
         return list;
     }
 
-    public Optional<Book> getItemBook(int id) {
+    public Optional<Book> getItemBook(String id) {
         return list.stream().filter(book -> book.id == id).findFirst();
     }
 
@@ -39,14 +40,14 @@ public class Book {
                 .collect(Collectors.toList());
     }
 
-    public void lendBook(int id) {
+    public void lendBook(String id) {
         list.stream()
                 .filter(book -> book.id == id)
                 .findFirst()
                 .ifPresent(book -> book.state = "borrowed");
     }
 
-    public boolean checkBook(int id) {
+    public boolean checkBook(String id) {
         return this.list.stream().anyMatch(book -> book.id == id && book.state.equals("borrowed"));
     }
 }
