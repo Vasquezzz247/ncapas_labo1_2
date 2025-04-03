@@ -1,32 +1,31 @@
-import java.time.LocalDate;
+import java.util.Random;
 import java.util.Scanner;
 
-public class Main { ;
+public class Main {
 
     public static void main(String[] args) {
-
-       Loans loans = new Loans();
-       Book book = new Book();
+        Loans loans = new Loans();
+        Book book = new Book();
 
         // Inicialización de libros
-        book.addItemToList(new Book("LC-XXXX-01", "Cien años de soledad", "Gabriel García Márquez", "Editorial Sudamericana", "available"));
-        book.addItemToList(new Book("LC-XXXX-02", "El nombre del viento", "Patrick Rothfuss", "Plaza & Janés", "available"));
-        book.addItemToList(new Book("LC-XXXX-03", "Orgullo y prejuicio", "Jane Austen", "Penguin Classics", "borrowed"));
+        book.addItemToList(new Book("LC-0001-A", "Cien años de soledad", "Gabriel García Márquez", "Libro", "available"));
+        book.addItemToList(new Book("LC-0002-B", "El nombre del viento", "Patrick Rothfuss", "Libro", "available"));
+        book.addItemToList(new Book("LC-0003-C", "Orgullo y prejuicio", "Jane Austen", "Libro", "borrowed"));
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Gestión de libros");
         int option;
 
         while (true) {
             System.out.print("Ingrese una opción: \n" +
-                             "1) Listado de libros \n" +
-                             "2) Realizar préstamo \n" +
-                             "0) Salir \n");
+                    "1) Listado de libros \n" +
+                    "2) Realizar préstamo \n" +
+                    "3) Agregar un nuevo libro \n" +
+                    "0) Salir \n");
             option = scanner.nextInt();
+            scanner.nextLine();
 
             switch (option) {
                 case 1:
-                    // Listar libros
                     System.out.println("----------------------------------");
                     System.out.println("Listado de libros:");
                     System.out.println("----------------------------------");
@@ -42,18 +41,14 @@ public class Main { ;
 
                 case 2:
                     // Realizar préstamo
-                    String bookId;
-                    String peopleName;
-                    String dui;
-
                     System.out.println("Ingrese su nombre:");
-                    peopleName = scanner.next();
+                    String peopleName = scanner.nextLine();
 
                     System.out.println("Si es mayor de edad ingrese su documento:");
-                    dui = scanner.next();
+                    String dui = scanner.nextLine();
 
                     System.out.println("Ingrese el ID del libro:");
-                    bookId = scanner.next();
+                    String bookId = scanner.nextLine();
 
                     boolean check = book.isBorrowed(bookId);
                     if (check) {
@@ -61,8 +56,8 @@ public class Main { ;
                     } else {
                         loans.addItem(new Loans(
                                 bookId,
-                                LocalDate.now().toString(),
-                                LocalDate.now().plusMonths(3).toString(),
+                                java.time.LocalDate.now().toString(),
+                                java.time.LocalDate.now().plusMonths(3).toString(),
                                 peopleName,
                                 dui
                         ));
@@ -71,15 +66,42 @@ public class Main { ;
                     }
                     break;
 
+                case 3:
+                    System.out.println("Ingrese el título del libro:");
+                    String title = scanner.nextLine();
+
+                    System.out.println("Ingrese el autor:");
+                    String author = scanner.nextLine();
+
+                    System.out.println("Ingrese el tipo (Libro/Manga/Periódico):");
+                    String type = scanner.nextLine();
+
+                    String newId = generateBookId(type);
+                    book.addItemToList(new Book(newId, title, author, type, "available"));
+                    System.out.println("Libro agregado con éxito. ID asignado: " + newId);
+                    break;
+
                 case 0:
                     System.out.println("Saliendo del programa...");
                     scanner.close();
-                    return; // Finaliza el programa
+                    return;
 
                 default:
-                    System.out.println("Opción no válida. Por favor intenta de nuevo.");
+                    System.out.println("Opción no válida. Intente de nuevo.");
                     break;
             }
         }
+    }
+
+    public static String generateBookId(String type) {
+        Random random = new Random();
+        int num = 1000 + random.nextInt(9000);
+        char letter = (char) ('A' + random.nextInt(26));
+        String prefix = switch (type.toLowerCase()) {
+            case "manga" -> "MG";
+            case "periódico" -> "PR";
+            default -> "LC";
+        };
+        return prefix + "-" + num + "-" + letter;
     }
 }
