@@ -12,9 +12,9 @@ public class Main {
         Loans loans = new Loans();
         BookServicesIMPL bookServices = new BookServicesIMPL(); // Replace with the actual implementation class
 
-        bookServices.addItemToList(new Books("LC-0001-A", "Cien años de soledad", "Gabriel García Márquez", "Libro", "available"));
-        bookServices.addItemToList(new Books("LC-0002-B", "El nombre del viento", "Patrick Rothfuss", "Libro", "available"));
-        bookServices.addItemToList(new Books("LC-0003-C", "Orgullo y prejuicio", "Jane Austen", "Libro", "available"));
+        bookServices.addItemToList(new Books("LC-0001-A", "Cien años de soledad", "Gabriel García Márquez", "Libro", "Una novela que narra la historia de la familia Buendía en el pueblo ficticio de Macondo.", "available"));
+        bookServices.addItemToList(new Books("LC-0002-B", "El nombre del viento", "Patrick Rothfuss", "Libro", "La historia de Kvothe, un joven con un talento extraordinario, que relata sus aventuras y desventuras.", "available"));
+        bookServices.addItemToList(new Books("LC-0003-C", "Orgullo y prejuicio", "Jane Austen", "Libro", "Una novela clásica que explora las complejidades del amor, el estatus social y la vida en la Inglaterra del siglo XIX.", "available"));
 
         Scanner scanner = new Scanner(System.in);
         int option;
@@ -43,6 +43,7 @@ public class Main {
                         System.out.println("      \"Autor\": \"" + book1.getAuthor() + "\",");
                         System.out.println("      \"Título\": \"" + book1.getTitle() + "\",");
                         System.out.println("      \"Tipo\": \"" + book1.getType() + "\",");
+                        System.out.println("      \"Descripcion\": \"" + book1.getDescription() + "\",");
                         System.out.println("      \"Estado\": \"" + book1.getState() + "\"");
                         System.out.print("    }");
                         if (count < totalBooks - 1) {
@@ -93,8 +94,11 @@ public class Main {
                     System.out.println("Ingrese el tipo (Libro/Manga/Periódico):");
                     String type = scanner.nextLine();
 
+                    System.out.println("Ingrese descripcion el libro:");
+                    String description = scanner.nextLine();
+
                     String newId = generateBookId(type);
-                    bookServices.addItemToList(new Books(newId, title, author, type, "available"));
+                    bookServices.addItemToList(new Books(newId, title, author, type, description, "available"));
                     System.out.println("Libro agregado con éxito. ID asignado: " + newId);
                     break;
 
@@ -139,6 +143,7 @@ public class Main {
                         System.out.println("      \"Autor\": \"" + book1.getAuthor() + "\",");
                         System.out.println("      \"Título\": \"" + book1.getTitle() + "\",");
                         System.out.println("      \"Tipo\": \"" + book1.getType() + "\",");
+                        System.out.println("      \"Descripcion\": \"" + book1.getDescription() + "\",");
                         System.out.println("      \"Estado\": \"" + book1.getState() + "\"");
                         System.out.print("    }");
                         if (countLoandBooks < totalLoandsBooks - 1) {

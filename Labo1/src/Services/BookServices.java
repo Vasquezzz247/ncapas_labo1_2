@@ -20,16 +20,18 @@ public interface BookServices {
         private String title;
         private String author;
         private String type;
+        private String description;
         private String state = "available";
 
         public Books() {
         }
 
-        public Books(String id, String title, String author, String type, String state) {
+        public Books(String id, String title, String author, String type, String description,String state) {
             this.id = id;
             this.title = title;
             this.author = author;
             this.type = type;
+            this.description = description;
             this.state = state;
         }
 
@@ -51,6 +53,10 @@ public interface BookServices {
 
         public String getState() {
             return state;
+        }
+
+        public String getDescription() {
+            return description;
         }
 
         public void setState(String state) {
